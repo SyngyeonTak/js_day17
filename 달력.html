@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .wrapper{
+            width: 700px;
+            height: 800px;
+            background: dodgerblue;
+            margin: auto;
+        }
+
+        #head{
+            width: 100%;
+            height: 100px;
+            background: peru;
+            font-size: 30px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        #cal{
+            width: 100%;
+            height: 700px;
+            background: pink;
+        }
+
+        a{
+            text-decoration: none;
+        }
+
+    </style>
+    <script src = "../js_workspace/js/lib.js"></script>
+    <script src="./Box.js"></script>
+    <script>
+        var head, caption, cal;
+        var currentYear= 0; var currentMonth = 0;
+        var startDay = 0; var lastDay = 0;
+
+        var days = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"]
+        var boxArray = new Array();
+        function printDate(yy, mm){
+            caption.innerHTML = yy+"년 "+(mm+1)+"월";
+        }
+
+        function getCurrentDate(){
+            var d = new Date();
+            currentYear = d.getFullYear();
+            currentMonth = d.getMonth();
+
+            d.setDate(1);
+            startDay = d.getDay(d.getDay());
+
+            lastDay = getLastDate(currentYear, currentMonth);
+
+            printDate(currentYear, currentMonth);
+        }
+
+        function prev(){
+            var d = new Date();
+            d.setFullYear(currentYear);
+            d.setMonth(currentMonth-1);
+
+            currentYear = d.getFullYear();
+            currentMonth = d.getMonth();
+
+            printDate(currentYear, currentMonth);
+
+            d.setDate(1);
+            startDay = d.getDay(d.getDay());
+            lastDay = getLastDate(currentYear, currentMonth);
+
+            setDate();
+        }
+        var total = 0;
+
+        function next(){
+            // cal.innerHTML = "";
+            var d = new Date();
+            d.setFullYear(currentYear);
+            d.setMonth(currentMonth+1);
+
+            currentYear = d.getFullYear();
+            currentMonth = d.getMonth();
+
+            printDate(currentYear, currentMonth);
+
+            d.setDate(1);
+            startDay = d.getDay(d.getDay());
+            lastDay = getLastDate(currentYear, currentMonth);
+
+            setDate();
+        }
+
+        function setDate(){
+            var num = 0;
+
+            for(var i = 0; i<boxArray.length; i++){
+                if(i<startDay || i >=startDay+lastDay){
+                    boxArray[i].setText("");
+                }else{
+                    num++;
+                    boxArray[i].setText(num);
+                }
+            }
+        }
+
+        function createDate(){
+            for(var i = 0; i<days.length; i++){
+                new Box(cal, 1, 100, 100, days[i]);
+            }
+        }
+
+        function createCell(){
+            //container, bd, width, height
+            
+
+        var n=0;
+        var num = 0;
+
+        for(var a=0;a<6;a++){
+            for(var i=0;i<7;i++){
+                var txt = "";
+                if((n >= startDay) && (num<lastDay)){
+                    num++;
+                    txt = num;
+                }else{
+                    txt = "";
+                }
+                boxArray.push(new Box(cal, 1, 100, 100,txt));           
+                n++;//무조건 하면 안되고, 각 월마다 시작요일을 알아내서, 그 요일서부터 이 작업을 수행
+            }
+        }
+
+        }
+
+        function init(){
+            head = document.getElementById("head");
+            caption = document.getElementById("caption");
+            cal = document.getElementById("cal");
+        }
+
+        window.addEventListener("load", function(){
+            init();
+            getCurrentDate();
+            createDate();
+            createCell();
+        });
+    </script>
+</head>
+<body>
+    <div class = "wrapper">
+        <div id = "head">
+            <span><a href = "javascript:prev()">◀</a></span>
+            <span id = "caption"></span>
+            <span><a href = "javascript:next()">▶</a></span>
+        </div>
+        <div id = "cal"></div>
+    </div>
+</body>
+</html>
